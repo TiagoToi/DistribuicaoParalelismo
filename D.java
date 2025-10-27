@@ -1,6 +1,6 @@
 import java.io.*;
 import java.net.*;
-
+import java.util.Arrays;
 
 public class D {
     private static final String[] IPS = {"localhost"};
@@ -10,18 +10,42 @@ public class D {
 
     public static void main(String[] args) {
         try {
-            int tamanhoVetor = 100_000;
+            System.out.print("[D] Digite o tamanho do vetor (0 caso deseje o tamanho maximo suportado): ");
+            int tamanhoVetor = 0;
+            try {
+                tamanhoVetor = Teclado.getUmInt();
+            } catch (Exception ex) {                
+            }
+
+            if (tamanhoVetor == 0) tamanhoVetor = 100000;
+
             byte[] vetor = new byte[tamanhoVetor];
             for (int i = 0; i < vetor.length; i++) {
                 int aleatorio = ((int)(Math.random() * (max - min))) + min;
                 vetor[i] = (byte) aleatorio;
             }
 
-            int parte = vetor.length / IPS.length;
-            ContagemThread[] threads = new ContagemThread[IPS.length];
-            for (int i = 0; i < IPS.length; i++) {
+            System.out.print("[D] Deseja ver o seu vetor (1 para sim 0 para nao): ");
+            try {
+                if (Teclado.getUmInt() == 1) {
+                    System.out.println(Arrays.toString(vetor));
+                }
+            } catch (Exception ex) {}
+
+            int qntServidores = IPS.length;
+            int servidoresDesejados = 0;
+            System.out.print("[D] Quantos servidores deseja se conectar (" + qntServidores + "servidores disponíveis): ");
+            try {
+                servidoresDesejados = Teclado.getUmInt();
+            } catch (Exception ex) {}
+
+            if (servidoresDesejados > 0 && qntServidores < servidoresDesejados) qntServidores = servidoresDesejados;
+
+            int parte = vetor.length / qntServidores;
+            ContagemThread[] threads = new ContagemThread[qntServidores];
+            for (int i = 0; i < qntServidores; i++) {
                 int inicioParte = i * parte;
-                int fimParte = (i == IPS.length - 1) ? vetor.length : (i + 1) * parte;
+                int fimParte = (i == qntServidores - 1) ? vetor.length : (i + 1) * parte;
                 byte[] subVetor = new byte[fimParte - inicioParte];
                 System.arraycopy(vetor, inicioParte, subVetor, 0, subVetor.length);
                 threads[i] = new ContagemThread(IPS[i], PORTA, subVetor);
