@@ -34,12 +34,12 @@ public class D {
 
             int qntServidores = IPS.length;
             int servidoresDesejados = 0;
-            System.out.print("[D] Quantos servidores deseja se conectar (" + qntServidores + "servidores disponíveis): ");
+            System.out.print("[D] Quantos servidores deseja se conectar (" + qntServidores + " servidores disponiveis): ");
             try {
                 servidoresDesejados = Teclado.getUmInt();
             } catch (Exception ex) {}
 
-            if (servidoresDesejados > 0 && qntServidores < servidoresDesejados) qntServidores = servidoresDesejados;
+            if (servidoresDesejados > 0 && servidoresDesejados < qntServidores) qntServidores = servidoresDesejados;
 
             int parte = vetor.length / qntServidores;
             ContagemThread[] threads = new ContagemThread[qntServidores];
